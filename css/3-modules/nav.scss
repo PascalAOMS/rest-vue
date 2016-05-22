@@ -1,0 +1,182 @@
+
+// NAVIGATION
+////////////////////////////
+.nav {
+	@include clear;
+
+	position: relative; // for dropdown
+	//float: right;
+
+
+	> ul { position: relative; margin: 0; display: inline; }
+
+	&--item {
+		float: left;
+		background: $sec-color;
+		transition: .2s;
+		border-bottom: 2px solid $prim-color;
+		font-size: .875rem;
+
+
+    	a { padding: 10px 15px;
+			display: block;
+			color: white;
+		}
+
+		&:hover, &.is-current { background: $prim-color; }
+  	}
+
+	&--icon { cursor: pointer; }
+
+	&--item:first-child { margin: 0; }
+
+
+// SUB MENU
+////////////////////////////
+	&-sub { // width and top generated via JS
+		position: absolute;
+		left: 0;
+		top: calc(100% + 2px); // offset for border
+		border-bottom: 2px solid $prim-color;
+		z-index: 1;
+	//	display: none;
+
+		&--item {
+	//		padding: 10px 15px;
+			@extend .nav--item;
+			float: none;
+			display: block;
+			padding-right: 40px;
+			border: none;
+		}
+
+		.nav-sub { position: absolute; top: 0; left: 100%;
+
+		}
+	}
+
+
+// NAV HANDLER
+////////////////////////////
+	$dash-array: 40;
+
+	&-handler {
+		width: 40px;
+		height: 35px;
+		cursor: pointer;
+		display: none;
+
+		&:hover line:nth-child(2) { stroke-dasharray: $dash-array / 1.33; }
+		&:hover line:nth-child(3) { stroke-dasharray: $dash-array / 2; }
+
+		line {
+			stroke: darken($prim-color, 15%);
+			stroke-width: 3;
+			stroke-dasharray: $dash-array;
+			transition: .2s ;
+			stroke-linecap: square;
+		}
+
+		&.is-active {
+			&:hover line { stroke-dasharray: inherit; }
+			line:nth-child(1) { transform: rotate(45deg) translate(5px, -5px); }
+			line:nth-child(2) { opacity: 0; }
+			line:nth-child(3) { transform: rotate(-45deg) translate(-19px, -5px); }
+		}
+	}
+
+
+} // end nav
+
+
+// DROPDOWN
+////////////////////////////
+.nav-dropdown {
+	position: relative; // to absolute the sub menu
+	padding-right: 10px; // for indicator
+
+	&::before, &::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		margin: auto;
+		background: white;
+		transition: .2s;
+	}
+
+	&::before {
+		height: 1px;
+		width: 7px;
+		right: 9px;
+	}
+	&::after {
+		height: 7px;
+		width: 1px;
+		right: 12px;
+	}
+
+	&.is-active {
+		&::after { height: 0; }
+
+		.nav-sub { z-index: 2; }
+	}
+
+	&:hover > ul { display: block; }
+
+	&--item { text-align: left;
+
+		> a { background: $sec-color; color: $white; padding: 9px 15px; display: block; transition: .4s;
+			&:hover { background: $prim-color; }
+		}
+
+		&:last-child { margin: 0; }
+	}
+	a { color: $white; }
+
+}
+
+
+
+.modal-handler { cursor: pointer; }
+
+// QUERIES
+////////////////////////////
+@media(min-width: $sm-up) { .nav { display: block !important; } } // DISAPPEARING FIX
+
+@media screen and (max-width: $xs) {
+
+	.nav { display: none; width: 100%;
+
+		> ul { display: block; padding-top: 25px; }
+
+		&-handler { display: block; }
+
+		&--item { display: block; border: none; margin-left: 0; width: 100%; text-align: left;
+			a { padding: 9px 15px; }
+		}
+
+		.nav-dropdown:hover > ul { display: none; } // for click event
+
+		&--item:hover, .dropdown-active { background: $prim-color; }
+
+		&--icon { float: left; width: 50%; text-align: center;
+			a { background: transparent; color: $txt-color; }
+			&:hover, &:hover a  { color: $white; background: $sec-color; }
+		}
+
+
+	}
+
+
+	.nav-dropdown {
+		&--level-1, &--level-2 { display: none; opacity: 1; position: relative; top: 0; margin-top: 10px; left: 0; }
+		&--level-2 { z-index: 1; }
+	}
+
+}
+
+
+.menu-item { @extend .nav--item; }
+.menu .children { @extend .nav-dropdown; }
+.menu .children .page_item { @extend .nav-dropdown--item; }
